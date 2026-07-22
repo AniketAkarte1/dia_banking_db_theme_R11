@@ -1,0 +1,43 @@
+# ── Core application ──────────────────────────────────────────────────────────
+streamlit>=1.28.0,<2.0.0
+gtts==2.5.4
+SpeechRecognition==3.16.0
+audio-recorder-streamlit==0.0.10
+openpyxl==3.1.5
+
+# ── Streamlit / data stack (Python 3.9 compatible) ───────────────────────────
+altair>=4.2.2,<6.0.0
+attrs>=23.1.0
+blinker>=1.7.0
+cachetools>=5.3.0
+entrypoints>=0.4
+et-xmlfile>=1.1.0
+gitdb>=4.0.11
+gitpython>=3.1.41
+jsonschema>=4.19.0
+jsonschema-specifications>=2023.7.1
+numpy>=1.24.0,<2.0.0
+pandas>=2.0.0,<3.1.0
+pillow>=10.0.0
+protobuf>=4.21.0,<6.0.0
+pyarrow>=14.0.0
+pydeck>=0.8.1
+python-dateutil>=2.9.0
+referencing>=0.30.0
+rpds-py>=0.10.0
+smmap>=5.0.1
+tenacity>=8.2.0
+toml>=0.10.2
+tornado>=6.3.0
+typing-extensions>=4.7.0
+tzdata>=2023.3
+watchdog>=3.0.0
+
+# ── Face recognition (OpenCV LBPH — no dlib/cmake required) ──────────────────
+# IMPORTANT: Must use opencv-contrib-python (NOT opencv-python or opencv-python-headless)
+# The contrib build includes cv2.face (LBPH recognizer) needed for face recognition.
+# If you have opencv-python or opencv-python-headless already installed, uninstall them first:
+#   pip uninstall opencv-python opencv-python-headless -y
+#   pip install opencv-contrib-python
+opencv-contrib-python>=4.8.0
+reportlab>=4.0.0

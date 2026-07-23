@@ -289,8 +289,6 @@ def _render_scan_screen() -> None:
                 )
                 _speak(welcome, detected_lang or lang_choice)
                 _set_recognized(name, detected_lang or lang_choice)
-                st.balloons()
-                time.sleep(0.8)
                 st.rerun()
 
             else:
@@ -473,7 +471,6 @@ def _render_enroll_success() -> None:
         '<span style="font-size:16px;font-family:DM Sans,sans-serif;font-weight:400;">{}</span></div>'.format(welcome),
         unsafe_allow_html=True,
     )
-    st.balloons()
 
     if st.button("🚀 Enter DIA", use_container_width=True, key="enter_main"):
         st.session_state["face_auth_done"] = True

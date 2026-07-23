@@ -45,8 +45,55 @@ _MODEL   = os.path.join(_BASE, "trainer", "trainer.yml")
 _SAMPLES = os.path.join(_BASE, "samples")
 
 # ── Cascade ────────────────────────────────────────────────────────────────────
-_CASCADE_PATH = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-_cascade      = cv2.CascadeClassifier(_CASCADE_PATH)
+def _load_cascade() -> cv2.CascadeClassifier:
+    """Load Haar cascade, trying cv2.data and project-local fallback paths."""
+    import sys
+
+    tried = []
+    # primary path from cv2
+    try:
+        primary = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+        tried.append(primary)
+        cascade = cv2.CascadeClassifier(primary)
+        if not cascade.empty():
+            print(f"Loaded cascade from: {primary}", file=sys.stderr)
+            return cascade
+    except Exception:
+        pass
+
+    # project-local cascades directory (bundled fallback)
+    project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "cascades", "haarcascade_frontalface_default.xml"))
+    tried.append(project_path)
+    if os.path.exists(project_path):
+        cascade = cv2.CascadeClassifier(project_path)
+        if not cascade.empty():
+            print(f"Loaded cascade from project data: {project_path}", file=sys.stderr)
+            return cascade
+
+    # common macOS/homebrew locations
+    alt_paths = [
+        "/usr/local/share/opencv4/haarcascades/haarcascade_frontalface_default.xml",
+        "/opt/homebrew/share/opencv4/haarcascades/haarcascade_frontalface_default.xml",
+        "/usr/local/Cellar/opencv/4.8.1/share/opencv4/haarcascades/haarcascade_frontalface_default.xml",
+    ]
+    for p in alt_paths:
+        tried.append(p)
+        if os.path.exists(p):
+            cascade = cv2.CascadeClassifier(p)
+            if not cascade.empty():
+                print(f"Loaded cascade from: {p}", file=sys.stderr)
+                return cascade
+
+    # If we reach here, none loaded
+    print("ERROR: Could not find haarcascade_frontalface_default.xml; face detection disabled", file=sys.stderr)
+    print("Tried paths:", file=sys.stderr)
+    for p in tried:
+        print(f"  - {p}", file=sys.stderr)
+    # return an (empty) CascadeClassifier to keep API consistent
+    return cv2.CascadeClassifier()
+
+
+_cascade = _load_cascade()
 
 # Confidence threshold: lower = stricter. LBPH distance < threshold = match.
 CONFIDENCE_THRESHOLD = 70.0
@@ -91,6 +138,36 @@ def _to_gray(frame: np.ndarray) -> np.ndarray:
 
 def _detect_face(gray: np.ndarray) -> Optional[Tuple[int, int, int, int]]:
     """Return the largest face rect (x, y, w, h) or None."""
+    # If cascade failed to load, bail out
+    try:
+        if getattr(_cascade, 'empty', lambda: True)() :
+            return None
+    except Exception:
+        return None
+
+    # basic validation of image
+    if gray is None:
+        return None
+    if not isinstance(gray, np.ndarray):
+        return None
+    if gray.size == 0:
+        return None
+    # convert color to gray if needed
+    if len(gray.shape) == 3:
+        try:
+            gray = cv2.cvtColor(gray, cv2.COLOR_BGR2GRAY)
+        except Exception:
+            return None
+
+    # ensure uint8 contiguous
+    if gray.dtype != np.uint8:
+        try:
+            gray = np.uint8(gray)
+        except Exception:
+            return None
+    if not gray.flags['C_CONTIGUOUS']:
+        gray = np.ascontiguousarray(gray)
+
     faces = _cascade.detectMultiScale(
         gray,
         scaleFactor=1.1,

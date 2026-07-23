@@ -499,6 +499,25 @@ div[data-testid="stToolbar"] { visibility: hidden; }
     font-family: 'DM Sans', sans-serif !important;
 }
 
+.stSelectbox div[role="combobox"],
+.stSelectbox div[data-baseweb="select"] > div,
+.stSelectbox [role="combobox"],
+.stSelectbox [data-baseweb="select"] * {
+    color: #FFFFFF !important;
+}
+
+.stSelectbox [role="option"],
+.stSelectbox [role="listbox"] *,
+.stSelectbox [data-baseweb="menu"] *,
+.stSelectbox ul li {
+    color: #FFFFFF !important;
+}
+
+.stSelectbox [data-baseweb="menu"] {
+    background: rgba(9,21,86,0.98) !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+}
+
 /* ═══════════════════════════════════════════════
    SIDEBAR — Deep navy
 ═══════════════════════════════════════════════ */

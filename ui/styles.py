@@ -407,16 +407,17 @@ div[data-testid="stToolbar"] { visibility: hidden; }
     bottom: 0;
     backdrop-filter: blur(20px);
     box-shadow: 0 -8px 32px rgba(0,0,0,0.3);
+    color: #FFFFFF;
 }
 
 /* ═══════════════════════════════════════════════
    STREAMLIT WIDGET OVERRIDES
 ═══════════════════════════════════════════════ */
 .stTextInput input, .stSelectbox select, .stTextArea textarea {
-    background: rgba(255,255,255,0.08) !important;
+    background: rgba(255,255,255,0.96) !important;
     border: 1.5px solid rgba(255,255,255,0.20) !important;
     border-radius: 8px !important;
-    color: #FFFFFF !important;
+    color: #111111 !important;
     font-family: 'DM Sans', sans-serif !important;
     font-size: 14px !important;
     box-shadow: none !important;
@@ -430,7 +431,7 @@ div[data-testid="stToolbar"] { visibility: hidden; }
 }
 
 .stTextInput input::placeholder {
-    color: rgba(255,255,255,0.35) !important;
+    color: rgba(17,17,17,0.45) !important;
     font-style: italic;
 }
 
